@@ -1,0 +1,64 @@
+clear all;
+close all;
+clc;
+
+load('data.mat');
+
+%% Partitioning
+
+k = 0.7; % training set percentage
+
+trainSet = Data(1:round(k*12862),:);
+testSet = Data(round(k*12862)+1:end,:);
+trainPosX = PosX(1:round(k*12862),:);
+testPosX = PosX(round(k*12862)+1:end,:);
+trainPosY = PosY(1:round(k*12862),:);
+testPosY = PosY(round(k*12862)+1:end,:);
+
+[trainSet_norm, mu, sigma] = zscore(trainSet);
+[coeff_pca, trainSet_pca, variance_pca] = pca(trainSet_norm);
+
+testSet_pca = ((testSet' - mu') ./ sigma')' * coeff_pca;
+
+%covMat = cov(trainSet_pca);
+%imshow(covMat);
+
+%% Regression
+Npc = 960;
+M = 3;
+
+trainI_X = ones(size(trainPosX,1),1);
+trainI_Y = ones(size(trainPosY,1),1);
+
+testI_X = ones(size(testPosX,1),1);
+testI_Y = ones(size(testPosY,1),1);
+
+for j = 1:Npc
+    
+    trainFM = trainSet_pca(:,1:j);
+    trainX_X = trainI_X;
+    trainX_Y = trainI_Y;
+    
+    testFM = testSet_pca(:,1:j);
+    testX_X = testI_X;
+    testX_Y = testI_Y;
+    
+    for m = 1:M
+        
+        trainX_X = [ trainX_X trainFM.^(M) ];
+        trainX_Y = [ trainX_Y trainFM.^(M) ];
+        testX_X = [ testX_X testFM.^(M) ];
+        testX_Y = [ testX_Y testFM.^(M) ];
+        
+        b_X = regress(trainPosX,trainX_X);
+        b_Y = regress(trainPosY,trainX_Y);
+        
+        trainErrX(j,m) = immse(trainPosX,trainX_X*b_X);
+        trainErrY(j,m) = immse(trainPosY,trainX_Y*b_Y);
+    
+        testErrX(j,m) = immse(testPosX,testX_X*b_X);
+        testErrY(j,m) = immse(testPosY,testX_Y*b_Y);
+        
+    end
+   
+end
