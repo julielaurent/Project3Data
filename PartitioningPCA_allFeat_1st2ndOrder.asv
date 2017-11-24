@@ -132,14 +132,14 @@ ylabel('PosX');
 plot(PosX,'-k','LineWidth',2);
 plot(round(k*12862)+1:12862,testX_X_1*b_X_1,'-r');
 plot(round(k*12862)+1:12862,testX_X_2*b_X_2,'-b');
-legend('Real position vector','Linear regression on position vector (test set)','Second order regression on position vector (test set)');
+legend('Real X','Linear regression on X (test set)','Second order regression on X (test set)');
 box off;
 axis([10100 10500 -0.05 0.2]);
 hold off;
 
 % Comparison order 1 and 2
 % Y
-subplot(2,1,2);
+subplot(2,1,1);
 title('Position Vector Y');
 hold on;
 xlabel('Time');
