@@ -23,6 +23,24 @@ testSet_pca = ((testSet' - mu') ./ sigma')' * coeff_pca;
 %covMat = cov(trainSet_pca);
 %imshow(covMat);
 
+%% Cumulative variance
+% First element representes the percentage of variance explained by PC1
+% Second element represents the percentage of variance explained by the 2
+% first PCs (PC1 & PC2)
+% And so on...
+VarCumPercentage = cumsum(variance_pca)/sum(variance_pca)*100;
+figure('Color','w');
+title('Number of PCA Explaining 90% of the Total Variance of the Data');
+plot(VarCumPercentage);
+xlabel('Principal Components');
+ylabel('Cumulative Variance Explained [%]');
+box off;
+axis([0 960 0 100]);
+line([0 960], [90 90],'Color','r');
+line([741 741],[0 90],'Color','r','LineStyle','--');
+
+%741 features explain 90.0268 % of the variances
+
 %% Regression
 
 trainI_X = ones(size(trainPosX,1),1);
