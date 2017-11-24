@@ -70,7 +70,7 @@ hold on;
 xlabel('Time');
 ylabel('PosX');
 plot(PosX,'-k','LineWidth',2);
-plot(trainX_X_1*b_X_1,'-r');
+plot(trainX_X_1*b_X_1,'--b');
 plot(round(k*12862)+1:12862,testX_X_1*b_X_1,'-b');
 legend('Real position vector','Regressed position vector (train set)','Regressed position vector (test set)');
 box off;
@@ -85,7 +85,7 @@ hold on;
 xlabel('Time');
 ylabel('PosY');
 plot(PosY,'-k','LineWidth',2);
-plot(trainX_Y_1*b_Y_1,'-r');
+plot(trainX_Y_1*b_Y_1,'--b');
 plot(round(k*12862)+1:12862,testX_Y_1*b_Y_1,'-b');
 box off;
 axis([8800 9200 0.15 0.3]);
@@ -132,14 +132,14 @@ ylabel('PosX');
 plot(PosX,'-k','LineWidth',2);
 plot(round(k*12862)+1:12862,testX_X_1*b_X_1,'-r');
 plot(round(k*12862)+1:12862,testX_X_2*b_X_2,'-b');
-legend('Real X','Linear regression on X (test set)','Second order regression on X (test set)');
+legend('Real position vector','Linear regression on position vector (test set)','Second order regression on position vector (test set)');
 box off;
 axis([10100 10500 -0.05 0.2]);
 hold off;
 
 % Comparison order 1 and 2
 % Y
-subplot(2,1,1);
+subplot(2,1,2);
 title('Position Vector Y');
 hold on;
 xlabel('Time');
