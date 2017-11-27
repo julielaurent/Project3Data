@@ -21,5 +21,60 @@ testPosY = PosY(round(k*12862)+1:end,:);
 %% Lasso
 lambda = logspace(-10,0,15);
 
-b_X = lasso(trainSet, trainPosX);
-b_Y = lasso(trainSet, trainPosY);
+[B_X, FitInfo_X] = lasso(trainSet, trainPosX, 'CV', 10, 'Lambda', lambda);
+[B_Y, FitInfo_Y] = lasso(trainSet, trainPosY, 'CV', 10, 'Lambda', lambda);
+
+% Number of non-zero weights
+Nb_nonzero_X = FitInfo_X.DF;
+Nb_nonzero_Y = FitInfo_Y.DF;
+
+% Plot CV MSE for each lambda
+figure('Color','w');
+semilogx(lambda,FitInfo_X.MSE,lambda,FitInfo_Y.MSE);
+xlabel('Lambda');
+ylabel('MSE');
+legend('X','Y')
+title('CV MSE for each Lambda');
+box off;
+
+% Lambda with best MSE
+best_nb_lambda_X = FitInfo_X.IndexMinMSE;
+best_nb_lambda_Y = FitInfo_Y.IndexMinMSE;
+best_lambda_X = FitInfo_X.LambdaMinMSE;
+best_lambda_Y = FitInfo_Y.LambdaMinMSE;
+
+% Regression
+Test_regressed_X = testSet * B_X(:,best_nb_lambda_X) + FitInfo_X.Intercept(best_nb_lambda_X);
+Test_regressed_Y = testSet * B_Y(:,best_nb_lambda_Y) + FitInfo_Y.Intercept(best_nb_lambda_Y);
+
+% Plot regressed data
+%X
+figure('Color','w');
+subplot(2,1,1);
+title('Position Vector X');
+hold on;
+xlabel('Time');
+ylabel('PosX');
+plot(PosX,'-k','LineWidth',2);
+plot(round(k*12862)+1:12862,Test_regressed_X,'-b');
+legend('Real position vector','Regressed position vector (test set)');
+box off;
+axis([8800 9200 -0.05 0.2]);
+hold off;
+
+% Y
+subplot(2,1,2);
+title('Position Vector Y');
+hold on;
+xlabel('Time');
+ylabel('PosY');
+plot(PosY,'-k','LineWidth',2);
+plot(round(k*12862)+1:12862,Test_regressed_Y,'-b');
+box off;
+axis([8800 9200 0.15 0.3]);
+hold off;
+
+% Test MSE
+testErrX = immse(testPosX,Test_regressed_X);
+testErrY = immse(testPosY,Test_regressed_Y);
+
