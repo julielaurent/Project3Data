@@ -58,7 +58,7 @@ plot(trainX_X_1*b_X_1,'--b');
 plot(round(k*12862)+1:12862,testX_X_1*b_X_1,'-b');
 legend('Real position vector','Regressed position vector (train set)','Regressed position vector (test set)');
 box off;
-%axis([8800 9200 -0.05 0.2]);
+axis([200 1200 -0.2 0.4]);
 hold off;
 
 % Y
@@ -71,6 +71,6 @@ plot(PosY,'-k','LineWidth',2);
 plot(trainX_Y_1*b_Y_1,'--b');
 plot(round(k*12862)+1:12862,testX_Y_1*b_Y_1,'-b');
 box off;
-%axis([8800 9200 0.15 0.3]);
+axis([200 1200 -0.2 0.4]);
 hold off;
 
