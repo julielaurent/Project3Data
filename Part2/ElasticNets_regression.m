@@ -21,8 +21,8 @@ testPosY = PosY(round(k*12862)+1:end,:);
 %% Lasso
 lambda = logspace(-10,0,15);
 
-[B_X, FitInfo_X] = lasso(trainSet, trainPosX, 'CV', 10, 'Lambda', lambda);
-[B_Y, FitInfo_Y] = lasso(trainSet, trainPosY, 'CV', 10, 'Lambda', lambda);
+[B_X, FitInfo_X] = lasso(trainSet, trainPosX, 'CV', 10, 'Lambda', lambda, 'Alpha', 0.5);
+[B_Y, FitInfo_Y] = lasso(trainSet, trainPosY, 'CV', 10, 'Lambda', lambda, 'Alpha', 0.5);
 
 % Number of non-zero weights
 Nb_nonzero_X = FitInfo_X.DF;
@@ -77,4 +77,3 @@ hold off;
 % Test MSE
 testErrX = immse(testPosX,Test_regressed_X);
 testErrY = immse(testPosY,Test_regressed_Y);
-
