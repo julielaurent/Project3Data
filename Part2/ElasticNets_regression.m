@@ -2,7 +2,7 @@ clear all;
 close all;
 clc;
 
-load('data.mat');
+load('Data.mat');
 
 %% Partitioning and normalization
 
