@@ -18,31 +18,45 @@ testPosY = PosY(round(k*12862)+1:end,:);
 % L1 normalization
 %trainSet_norm = norm(trainSet,1);
 
-%% Lasso
+%% Elastic Net
 lambda = logspace(-10,0,15);
-alpha = 0.5;
+i = 0;
+for alpha = 0.1:0.1:1
+    i = i + 1;
+    [B_X, FitInfo_X] = lasso(trainSet, trainPosX, 'CV', 10, 'Lambda', lambda, 'Alpha', alpha);
+    [B_Y, FitInfo_Y] = lasso(trainSet, trainPosY, 'CV', 10, 'Lambda', lambda, 'Alpha', alpha);
 
-[B_X, FitInfo_X] = lasso(trainSet, trainPosX, 'CV', 10, 'Lambda', lambda, 'Alpha', alpha);
-[B_Y, FitInfo_Y] = lasso(trainSet, trainPosY, 'CV', 10, 'Lambda', lambda, 'Alpha', alpha);
+    % Number of non-zero weights
+    Nb_nonzero_X(i) = FitInfo_X.DF;
+    Nb_nonzero_Y(i) = FitInfo_Y.DF;
 
-% Number of non-zero weights
-Nb_nonzero_X = FitInfo_X.DF;
-Nb_nonzero_Y = FitInfo_Y.DF;
+    % Plot CV MSE for each lambda
+    figure('Color','w');
+    semilogx(lambda,FitInfo_X.MSE,lambda,FitInfo_Y.MSE);
+    xlabel('Lambda');
+    ylabel('MSE');
+    legend('Position vector X','Position vector Y')
+    title('CV MSE for each Lambda');
+    box off;
 
-% Plot CV MSE for each lambda
-figure('Color','w');
-semilogx(lambda,FitInfo_X.MSE,lambda,FitInfo_Y.MSE);
-xlabel('Lambda');
-ylabel('MSE');
-legend('Position vector X','Position vector Y')
-title('CV MSE for each Lambda');
-box off;
+    % Lambda with best MSE
+    best_nb_lambda_X(i) = FitInfo_X.IndexMinMSE;
+    best_nb_lambda_Y(i) = FitInfo_Y.IndexMinMSE;
+    best_lambda_X(i) = FitInfo_X.LambdaMinMSE;
+    best_lambda_Y(i) = FitInfo_Y.LambdaMinMSE;
+    
+    MSE_minLambda_X(i) = min(FitInfo_X.MSE);
+    MSE_minLambda_Y(i) = min(FitInfo_Y.MSE);
+
+end
 
 % Lambda with best MSE
-best_nb_lambda_X = FitInfo_X.IndexMinMSE;
-best_nb_lambda_Y = FitInfo_Y.IndexMinMSE;
-best_lambda_X = FitInfo_X.LambdaMinMSE;
-best_lambda_Y = FitInfo_Y.LambdaMinMSE;
+best_nb_alpha_X = find(MSE_minLambda_X == min(MSE_minLambda_X));
+min_MSE_X = min(MSE_minLambda_X);
+best_nb_alpha_Y = find(MSE_minLambda_Y == min(MSE_minLambda_Y));
+min_MSE_Y = min(MSE_minLambda_Y);
+best_alpha_X = alpha(best_nb_alpha_X);
+best_alpha_Y = alpha(best_nb_alpha_Y);
 
 % Regression
 Test_regressed_X = testSet * B_X(:,best_nb_lambda_X) + FitInfo_X.Intercept(best_nb_lambda_X);

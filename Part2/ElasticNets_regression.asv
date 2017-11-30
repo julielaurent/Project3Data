@@ -20,7 +20,7 @@ testPosY = PosY(round(k*12862)+1:end,:);
 
 %% Lasso
 lambda = logspace(-10,0,15);
-alpha = 0.5;
+alpha = logspace(0,1,;
 
 [B_X, FitInfo_X] = lasso(trainSet, trainPosX, 'CV', 10, 'Lambda', lambda, 'Alpha', alpha);
 [B_Y, FitInfo_Y] = lasso(trainSet, trainPosY, 'CV', 10, 'Lambda', lambda, 'Alpha', alpha);
