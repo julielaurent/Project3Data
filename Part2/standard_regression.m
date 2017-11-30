@@ -15,9 +15,6 @@ testPosX = PosX(round(k*12862)+1:end,:);
 trainPosY = PosY(1:round(k*12862),:);
 testPosY = PosY(round(k*12862)+1:end,:);
 
-%[trainSet_norm, mu, sigma] = zscore(trainSet);
-%testSet_norm = ((testSet' - mu') ./ sigma')';
-
 %% Linear Regression
 
 trainI_X = ones(size(trainPosX,1),1);
