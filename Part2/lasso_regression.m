@@ -15,9 +15,6 @@ testPosX = PosX(round(k*12862)+1:end,:);
 trainPosY = PosY(1:round(k*12862),:);
 testPosY = PosY(round(k*12862)+1:end,:);
 
-% L1 normalization
-%trainSet_norm = norm(trainSet,1);
-
 %% Lasso
 lambda = logspace(-10,0,15);
 
