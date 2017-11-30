@@ -17,6 +17,10 @@ testPosY = PosY(round(k*12862)+1:end,:);
 
 [trainSet_norm, mu, sigma] = zscore(trainSet);
 [coeff_pca, trainSet_pca, variance_pca] = pca(trainSet_norm);
+figure()
+imshow(cov(trainSet));
+figure()
+imshow(cov(trainSet_pca));
 
 %testSet_pca = ((testSet' - mu') ./ sigma')' * coeff_pca;
 testSet_pca = ((testSet - ones(size(testSet,1),1)*mu) ./ (ones(size(testSet,1),1)*sigma)) * coeff_pca;
