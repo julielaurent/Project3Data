@@ -24,19 +24,6 @@ for alpha = 0.1:0.1:1
     [B_X, FitInfo_X] = lasso(trainSet, trainPosX, 'CV', 10, 'Lambda', lambda, 'Alpha', alpha);
     [B_Y, FitInfo_Y] = lasso(trainSet, trainPosY, 'CV', 10, 'Lambda', lambda, 'Alpha', alpha);
 
-    % Number of non-zero weights
-%     Nb_nonzero_X = FitInfo_X.DF;
-%     Nb_nonzero_Y = FitInfo_Y.DF;
-
-%     % Plot CV MSE for each lambda
-%     figure('Color','w');
-%     semilogx(lambda,FitInfo_X.MSE,lambda,FitInfo_Y.MSE);
-%     xlabel('Lambda');
-%     ylabel('MSE');
-%     legend('Position vector X','Position vector Y')
-%     title('CV MSE for each Lambda');
-%     box off;
-
     % Lambda with best MSE
     best_nb_lambda_X(i) = FitInfo_X.IndexMinMSE;
     best_nb_lambda_Y(i) = FitInfo_Y.IndexMinMSE;
@@ -45,19 +32,18 @@ for alpha = 0.1:0.1:1
     
     MSE_minLambda_X(i) = min(FitInfo_X.MSE);
     MSE_minLambda_Y(i) = min(FitInfo_Y.MSE);
-
 end
 
 % Best lambda and alpha
 alpha = 0.1:0.1:1;
-idx_bestAlpha_X = find(MSE_minLambda_X == min(MSE_minLambda_X));
-idx_bestAlpha_Y = find(MSE_minLambda_Y == min(MSE_minLambda_Y));
 min_MSE_X = min(MSE_minLambda_X);
 min_MSE_Y = min(MSE_minLambda_Y);
-best_alpha_X = alpha(idx_bestAlpha_X);
-bestAssociated_lambda_X = best_lambda_X(idx_bestAlpha_X);
-best_alpha_Y = alpha(idx_bestAlpha_Y);
-bestAssociated_lambda_Y = best_lambda_Y(idx_bestAlpha_Y);
+idx_bestAlpha_X = find(MSE_minLambda_X == min_MSE_X);
+idx_bestAlpha_Y = find(MSE_minLambda_Y == min_MSE_Y);
+best_alpha_X = alpha(idx_bestAlpha_X); % find best alpha for X
+bestAssociated_lambda_X = best_lambda_X(idx_bestAlpha_X); % best lambda associated for X
+best_alpha_Y = alpha(idx_bestAlpha_Y); % find best alpha for Y
+bestAssociated_lambda_Y = best_lambda_Y(idx_bestAlpha_Y); % best lambda associated for Y
 
 % Elastic net with optimized parameters
 [B_X_opt, FitInfo_X_opt] = lasso(trainSet, trainPosX, 'CV', 10, 'Lambda', bestAssociated_lambda_X, 'Alpha', best_alpha_X);
@@ -69,7 +55,7 @@ Nb_nonzero_Y = FitInfo_Y_opt.DF;
 
     % Plot CV MSE for each lambda
     figure('Color','w');
-    semilogx(lambda,FitInfo_X.MSE,lambda,FitInfo_Y.MSE);
+    semilogx(bestAssociated_lambda_X,FitInfo_X_opt.MSE,bestAssociated_lambda_Y,FitInfo_Y_opt.MSE);
     xlabel('Lambda');
     ylabel('MSE');
     legend('Position vector X','Position vector Y')
