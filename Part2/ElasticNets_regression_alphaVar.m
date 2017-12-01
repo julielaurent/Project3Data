@@ -52,16 +52,6 @@ bestAssociated_lambda_Y = best_lambda_Y(idx_bestAlpha_Y); % best lambda associat
 Nb_nonzero_X = FitInfo_X_opt.DF;
 Nb_nonzero_Y = FitInfo_Y_opt.DF;
 
-
-    % Plot CV MSE for each lambda
-    figure('Color','w');
-    semilogx(bestAssociated_lambda_X,FitInfo_X_opt.MSE,bestAssociated_lambda_Y,FitInfo_Y_opt.MSE);
-    xlabel('Lambda');
-    ylabel('MSE');
-    legend('Position vector X','Position vector Y')
-    title('CV MSE for each Lambda');
-    box off;
-
 % Regression
 Test_regressed_X = testSet * B_X_opt + FitInfo_X_opt.Intercept;
 Test_regressed_Y = testSet * B_Y_opt + FitInfo_Y_opt.Intercept;
